@@ -17,6 +17,10 @@
 (def low-ace-straight-flush-hand  ["2D" "3D" "4D" "5D" "AD"])
 (def high-ace-straight-flush-hand ["TS" "AS" "QS" "KS" "JS"])
 
+;; Special case: straights will be calculated when the highest card
+;; minus the lowest cards will be 4.
+;; This is the case for the next hand, but it is not a straight.
+(def no-straight-hand-but-straight-value ["2S" "3D" "3D" "5S" "AS"])
 
 ;; pull in private function for tests
 (def suite             #'pkrsim.handeval/suite)
@@ -80,11 +84,6 @@
 (expect false (flush? full-house-hand))
 (expect false (flush? two-pairs-hand))
 
-;; Special case: straights will be calculated when the highest card
-;; minus the lowest cards will be 4.
-;; This is the case for the next hand, but it is not a straight.
-(def no-straight-hand-but-straight-value ["2S" "3D" "3D" "5S" "AS"])
-
 ;; Straights
 (expect true  (straight? high-ace-straight-hand))
 (expect true  (straight? low-ace-straight-hand))
@@ -120,32 +119,5 @@
 ;; Hands had to be sorted differently to be compared
 ;; hand-by-hand.
 (expect '(9 7 5 4 2) (sort-hand-for-cmp flush-hand))
-(expect '(2 7 5 4)   (sort-hand-for-cmp pair-hand))
-(expect '(2 7 4)     (sort-hand-for-cmp three-of-a-kind-hand))
-(expect '(2 7)       (sort-hand-for-cmp four-of-a-kind-hand))
 
-;; Compare two or more equal valued hands
 
-(def two-pair-1 ["TH" "TS" "AD" "5H" "2H"])
-(def two-pair-2 ["TH" "TS" "KD" "5S" "2D"])
-(def flush-1    ["AS" "KS" "5S" "4S" "2S"])
-(def flush-2    ["AS" "TS" "5S" "4S" "2S"])
-(def flush-3    ["AS" "8S" "5S" "4S" "2S"])
-(def straight-1 ["8S" "7S" "6D" "5S" "4D"])
-(def straight-2 ["7S" "6D" "5S" "4D" "3S"])
-
-(expect two-pair-1 (find-best-equal-value-hand two-pair-1 two-pair-2))
-(expect flush-1    (find-best-equal-value-hand flush-1 flush-2 flush-3))
-(expect straight-1 (find-best-equal-value-hand straight-1 straight-2))
-
-;; Finds the best hand out of 7 cards.
-
-(def sc-flush-hand    ["AS" "2D" "KS" "5S" "4S" "7D" "2S"])
-(def sc-straight-hand ["7S" "6D" "AS" "5S" "TD" "4D" "3S"])
-(def sc-pair-hand     ["AS" "QD" "TS" "5S" "TC" "3S" "2C"])
-
-(def result-pair ["TS" "TC" "AS" "QD" "5S"])
-
-(expect (sort flush-1)     (sort (find-best-hand sc-flush-hand)))
-(expect (sort straight-2)  (sort (find-best-hand sc-straight-hand)))
-(expect (sort result-pair) (sort (find-best-hand sc-pair-hand)))

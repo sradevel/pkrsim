@@ -1,4 +1,5 @@
-(ns pkrsim.deck)
+(ns pkrsim.deck
+  (:require [pkrsim.util :refer :all]))
 
 ;; 52 PokderCard Deck
 (def card-deck
@@ -10,6 +11,16 @@
    ])
 
 (defn new-card-deck
+  "Creates a new 52 PokerCard deck."
+  []
+  card-deck)
+
+(defn new-shuffled-card-deck
   "Creates a new already shuffled 52 PokerCard deck."
   []
-  (shuffle card-deck))
+  (shuffle (new-card-deck)))
+
+(defn remove-cards-from-deck
+  "Removes cards from the deck."
+  [deck cards]
+  (filter-subvector cards deck))

@@ -137,7 +137,7 @@
         (pair? hand)
         (three-of-a-kind? hand)
         (four-of-a-kind? hand)) (rank-list-tp-fh-hands hand)
-    :else (reverse (sort (seq-rank hand)))))
+        :else (reverse (sort (seq-rank hand)))))
 
 (defn- hand-cmp
   "Compares two hands card by card."

@@ -5,3 +5,18 @@
   [v map]
   (keep #(when (= (val %) v)
            (key %)) map))
+
+(defn filter-subvector
+  "Filters the given subvector out of the given vector."
+  [subvec v]
+    (let [iterator (fn iter [subvec c]
+                   (cond
+                     (empty? subvec) true
+                     (not= c (first subvec)) (iter (rest subvec) c)
+                     :else false))]
+    (vec (filter #(iterator subvec %) v))))
+
+(defn take-into
+  "Takes up to max elements from from into in."
+  [in max from]
+  (into in (take (- max (count in)) from)))
