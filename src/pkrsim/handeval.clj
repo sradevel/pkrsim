@@ -116,8 +116,9 @@
                         v
                         0)) checkers))))
 
+;; TODO: Fix name of the Method.
 (defn- rank-list-tp-fh-hands
-  "Creates a list of the card ranks for Two-Pair or Full-house hands.
+  "Creates a vector of the card ranks for Two-Pair or Full-house hands.
   Notice: Only one value for the pair or set of the hand will be included
   in the list."
   [hand]
@@ -125,11 +126,10 @@
         freq-list (distinct (reverse (sort (vals freq))))]
     (reduce #(into %1 (reverse (sort (get-keys-by-val %2 freq)))) [] freq-list)))
 
-(defn- sort-hand-for-cmp
-  "Sorts the hands for the hand-comperator. If it is a high-card
-   based hand, it sorts the cards by their value. If it is a 
-   two-pair or full-house hand, it sorts the hand by their pairs or 
-  sets."
+(defn sort-card-values
+  "Returns a vector of the card values. Notice: Pairs, Two-pairs, trips and 
+  four-of -a-kind values appear only once in the vector. Vector can be used
+  for easy card-by-card hand comparisons."
   [hand]
   (cond
     (or (full-house? hand)
@@ -142,8 +142,8 @@
 (defn- hand-cmp
   "Compares two hands card by card."
   [hand-1 hand-2]
-  (let [r-hand-1 (sort-hand-for-cmp hand-1)
-        r-hand-2 (sort-hand-for-cmp hand-2)
+  (let [r-hand-1 (sort-card-values hand-1)
+        r-hand-2 (sort-card-values hand-2)
         card-values (map vector r-hand-1 r-hand-2)
         cmp (fn [[v1 v2]] (compare v1 v2))
         iterator (fn iterator [card-tuples]
@@ -174,5 +174,13 @@
   (let [hand-permutations (tokenize-seven-card-hand hand)
         hand-values (reduce #(assoc %1 %2 (value %2)) {} hand-permutations)
         best-hand-value (apply max (vals hand-values))]
-    (apply find-best-equal-value-hand
-           (get-keys-by-val best-hand-value hand-values))))
+    (vec (apply find-best-equal-value-hand
+           (get-keys-by-val best-hand-value hand-values)))))
+
+;; FIXME: hand value will be evaluated twice here...
+(defn find-best-hand-with-value
+  "Finds the best hand out of a 7 card hand. Returns a Map with the 
+  best hand and their value."
+  [hand]
+  (let [best-hand (find-best-hand hand)]
+    {:hand best-hand :value (value best-hand)}))

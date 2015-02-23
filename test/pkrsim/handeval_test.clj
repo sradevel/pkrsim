@@ -28,7 +28,7 @@
 (def seq-rank          #'pkrsim.handeval/seq-rank)
 (def seq-suite         #'pkrsim.handeval/seq-suite)
 (def value             #'pkrsim.handeval/value)
-(def sort-hand-for-cmp #'pkrsim.handeval/sort-hand-for-cmp)
+(def rank-list-tp-fh-hands #'pkrsim.handeval/rank-list-tp-fh-hands)
 
 ;; test suite 
 (expect "S" (suite "AS"))
@@ -115,9 +115,37 @@
 (expect 8 (value high-ace-straight-flush-hand))
 (expect 8 (value low-ace-straight-flush-hand))
 
+;; rank-hands
+(expect [2 7 5 4]   (rank-list-tp-fh-hands ["2H" "2S" "4C" "5C" "7D"]))
+(expect [2 13 10 7] (rank-list-tp-fh-hands ["2H" "2S" "KC" "TC" "7D"]))
+
+(expect ["2H" "2S" "4C" "KC" "7D"]
+        (find-best-equal-value-hand ["2H" "2S" "4C" "5C" "7D"]
+                                    ["2H" "2S" "4C" "KC" "7D"]))
+
 ;; sort-hand-for-cmp
 ;; Hands had to be sorted differently to be compared
 ;; hand-by-hand.
-(expect '(9 7 5 4 2) (sort-hand-for-cmp flush-hand))
+(expect '(9 7 5 4 2) (sort-card-values flush-hand))
+
+;; 7 card Test hands
+(def high-king                    ["KC" "TD" "2H" "3S" "4C" "5C" "7D"])
+(def pair-hand-sc                 ["2H" "2S" "4C" "5C" "7D" "KC" "TD"])
+(def two-pairs-hand-sc            ["2H" "2S" "4C" "4D" "7D" "KC" "TD"])
+(def three-of-a-kind-hand-sc      ["2H" "2S" "2C" "4D" "7D" "KC" "TD"])
+(def four-of-a-kind-hand-sc       ["2H" "2S" "2C" "2D" "7D" "KC" "TD"])
+(def straight-hand-sc             ["2H" "3S" "6C" "5D" "4D" "KC" "TD"])
+(def low-ace-straight-hand-sc     ["2H" "3S" "4C" "5D" "AD" "KC" "TD"])
+(def high-ace-straight-hand-sc    ["TH" "AS" "QC" "KD" "JD" "KC" "TD"])
+(def flush-hand-sc                ["2H" "4H" "5H" "9H" "7H" "KC" "TD"])
+(def full-house-hand-sc           ["2H" "5D" "2D" "2C" "5S" "KC" "TD"])
+(def straight-flush-hand-sc       ["2H" "3H" "6H" "5H" "4H" "KC" "TD"])
+
+;; find-best-hand
+(expect '("2H" "2S" "7D" "KC" "TD") (find-best-hand pair-hand-sc))
+
+(expect {:hand '("2H" "2S" "7D" "KC" "TD") :value 1}
+        (find-best-hand-with-value pair-hand-sc))
+
 
 

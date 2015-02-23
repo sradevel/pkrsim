@@ -22,6 +22,10 @@
   [game new-deck]
   (assoc game :deck new-deck))
 
+(defn- get-players
+  [game]
+  (:players game))
+
 (defn- fill-up-board
   [board deck]
   (take-into 5 board deck))
@@ -49,8 +53,8 @@
                      new-p (assoc p :holecards (fill-up-player hc d))
                      new-d (remove-cards-from-deck d (:holecards new-p))]
                  {:deck new-d :players (conj (:players r) new-p)}))
-        res (reduce draw-player {:deck (:deck game) :players []} (:players game))]
-    (assoc (assoc game :deck (:deck res)) :players (:players res))))
+        res (reduce draw-player {:deck (:deck game) :players []} (get-players game))]
+    (assoc (assoc game :deck (:deck res)) :players (get-players res))))
 
 
 (defn- draw-cards
@@ -59,6 +63,15 @@
   (let [g-board (draw-board-cards game)
         g-board-player (draw-player-cards g-board)]
     g-board-player))
+
+(defn- evaluate-players
+  "Evaluates all players cards. Adds a :value key to the players vector of game."
+  [game]
+  (let [eval-p (fn [r p]
+                 )]
+    (assoc game :players (reduce eval-p
+                                 {:players [] :board (get-board game)}
+                                 (get-players game)))))
 
 (defn play
   "Takes a game and plays it to the end."
