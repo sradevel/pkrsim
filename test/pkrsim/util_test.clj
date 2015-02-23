@@ -32,10 +32,10 @@
 (def test-vec-3 [1 2 3 4])
 (def test-vec-4 [5 6 7 8])
 
-(expect [1 2 3 4 5 6] (take-into test-vec-3 6 test-vec-4))
-(expect [1 2 3 4]     (take-into test-vec-3 0 test-vec-4))
-(expect [1 2 3 4]     (take-into test-vec-3 2 []))
-(expect [5 6 7 8]     (take-into [] 4 test-vec-4))
-(expect []            (take-into [] 0 []))
+(expect [1 2 3 4 5 6] (take-into 6 test-vec-3 test-vec-4))
+(expect [1 2 3 4]     (take-into 0 test-vec-3 test-vec-4))
+(expect [1 2 3 4]     (take-into 2 test-vec-3 []))
+(expect [5 6 7 8]     (take-into 4 [] test-vec-4))
+(expect []            (take-into 0 [] []))
 
 

@@ -18,5 +18,5 @@
 
 (defn take-into
   "Takes up to max elements from from into in."
-  [in max from]
+  [max in from]
   (into in (take (- max (count in)) from)))

@@ -22,6 +22,13 @@
   [game new-deck]
   (assoc game :deck new-deck))
 
+(defn- fill-up-board
+  [board deck]
+  (take-into 5 board deck))
+
+(defn- fill-up-player
+  [player deck]
+  (take-into 2 player deck))
 ;;
 ;; Play the game.
 ;;
@@ -30,7 +37,7 @@
   [game]
   (let [board (get-board game)
         deck (get-deck game)
-        game-with-board (set-board game (take-into board 5 deck))]
+        game-with-board (set-board game (fill-up-board board deck))]
     (set-deck game-with-board (remove-cards-from-deck deck (get-board game-with-board)))))
 
 (defn- draw-player-cards
@@ -39,7 +46,7 @@
              (fn [r p]
                (let [hc (:holecards p)
                      d (:deck r)
-                     new-p (assoc p :holecards (take-into hc 2 d))
+                     new-p (assoc p :holecards (fill-up-player hc d))
                      new-d (remove-cards-from-deck d (:holecards new-p))]
                  {:deck new-d :players (conj (:players r) new-p)}))
         res (reduce draw-player {:deck (:deck game) :players []} (:players game))]
