@@ -1,5 +1,5 @@
 (ns pkrsim.handeval
-  (:require [pkrsim.util :refer :all]))
+  (:require [pkrsim.util :as u]))
 
 ;;
 ;; local private Utility functions
@@ -124,7 +124,7 @@
   [hand]
   (let [freq (frequencies (seq-rank hand))
         freq-list (distinct (reverse (sort (vals freq))))]
-    (reduce #(into %1 (reverse (sort (get-keys-by-val %2 freq)))) [] freq-list)))
+    (reduce #(into %1 (reverse (sort (u/get-keys-by-val %2 freq)))) [] freq-list)))
 
 (defn sort-card-values
   "Returns a vector of the card values. Notice: Pairs, Two-pairs, trips and 
@@ -175,7 +175,7 @@
         hand-values (reduce #(assoc %1 %2 (value %2)) {} hand-permutations)
         best-hand-value (apply max (vals hand-values))]
     (vec (apply find-best-equal-value-hand
-           (get-keys-by-val best-hand-value hand-values)))))
+           (u/get-keys-by-val best-hand-value hand-values)))))
 
 ;; FIXME: hand value will be evaluated twice here...
 (defn find-best-hand-with-value
