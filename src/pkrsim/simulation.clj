@@ -28,6 +28,7 @@
         (fn [p] {:id (:id p) :result (:result p)})
         (:players (g/play game)))))
 
+
 (defn simulate-game
   [game]
   (repeatedly #(simulate-step (prepare-step game))))
@@ -54,3 +55,13 @@
 (defn analyze-game
   [game n]
   (reduce map-simulation-result {} (take n (simulate-game game))))
+
+(defn analyze-game-parallel
+  [game n]
+  (let [sim-steps (repeatedly n #(prepare-step game))
+        transform (fn [g]
+                    (map (fn [p] {:id (:id p) :result (:result p)})
+                         (:players g)))
+        played-games (pmap g/play sim-steps)
+        results (map transform played-games)]
+    (reduce map-simulation-result {} results)))
