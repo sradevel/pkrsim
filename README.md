@@ -54,7 +54,7 @@ All cards a represented as a string.
 
 ```clojure
 (def ace-of-hearts "AH")
-(def 10-of-spades  "10S)
+(def 10-of-spades  "10S")
 (def jack-of-cross "JC")
 (def 2-of-diamonds "2D")
 ;; and so on
@@ -135,7 +135,7 @@ Finds the best hand out of a 7 card vector.
 
 #### find-best-hand-with-value
 
-Same as _find_best_hand_ but returns a map with the hand and the value
+Same as _find-best-hand_ but returns a map with the hand and the value
 of best found hand.
 
 ```clojure
