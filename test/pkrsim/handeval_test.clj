@@ -27,7 +27,7 @@
 (def rank              #'pkrsim.handeval/rank)
 (def seq-rank          #'pkrsim.handeval/seq-rank)
 (def seq-suite         #'pkrsim.handeval/seq-suite)
-(def value             #'pkrsim.handeval/value)
+(def value             #'pkrsim.handeval/hand-value)
 (def rank-list-tp-fh-hands #'pkrsim.handeval/rank-list-tp-fh-hands)
 
 ;; test suite 

@@ -104,7 +104,7 @@
 ;; Evaluate the hand value
 ;;
 
-(defn- value
+(defn hand-value
   "Defines the value of a hand."
   [hand]
   (let [checkers #{[high-card? 0] [pair? 1] [two-pair? 2]
@@ -172,7 +172,7 @@
   "Finds the best hand out of a 7 card hand."
   [hand]
   (let [hand-permutations (tokenize-seven-card-hand hand)
-        hand-values (reduce #(assoc %1 %2 (value %2)) {} hand-permutations)
+        hand-values (reduce #(assoc %1 %2 (hand-value %2)) {} hand-permutations)
         best-hand-value (apply max (vals hand-values))]
     (vec (apply find-best-equal-value-hand
            (u/get-keys-by-val best-hand-value hand-values)))))
@@ -183,4 +183,4 @@
   best hand and their value."
   [hand]
   (let [best-hand (find-best-hand hand)]
-    {:hand best-hand :value (value best-hand)}))
+    {:hand best-hand :value (hand-value best-hand)}))
