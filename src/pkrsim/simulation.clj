@@ -15,53 +15,44 @@
   [game]
   (assoc game :deck (d/new-shuffled-card-deck)))
 
-(defn- prepare-step
+(defn- prepare-game
   [game]
   (-> game
       add-shuffled-deck
       remove-board-cards-from-deck
       remove-player-cards-from-deck))
 
-(defn- simulate-step
-  [game]
-  (vec (map
-        (fn [p] {:id (:id p) :result (:result p)})
-        (:players (g/play game)))))
-
-
-(defn simulate-game
-  [game]
-  (repeatedly #(simulate-step (prepare-step game))))
-
-(defn- count-result
-  [e r]
-  (let [entry (if (or (nil? e) (empty? e))
-                  {:w 0 :l 0 :s 0}
-                  e)]
-    (cond
-      (= r 1) (assoc entry :w (inc (:w entry)))
-      (= r -1) (assoc entry :l (inc (:l entry)))
-      (= r 0) (assoc entry :s (inc (:s entry))))))
-
 (defn- map-simulation-result
   [a r]
-  (reduce (fn [x y]
+  (let [k {1 :w 0 :s -1 :l}
+        count-result #(if (empty? %1)
+                        {:w 0 :l 0 :s 0}
+                        (merge-with + %1 {(k %2) 1}))]
+    (reduce (fn [x y]
          (let [key (keyword (str (:id y)))
                e (get x key)
                entry (if (nil? e) {} e)]
            (assoc x key (count-result entry (:result y)))))
-       a r))
+       a r)))
 
-(defn analyze-game
+(defn simulate-game
+  "Simulates a partial played game n-times. Returns a list
+   of all simualted games with their results. Simulation tries
+  to parallelize the game evaluation."
   [game n]
-  (reduce map-simulation-result {} (take n (simulate-game game))))
+  (let [steps (repeatedly n #(prepare-game game))]
+    (pmap g/play steps)))
 
-(defn analyze-game-parallel
-  [game n]
-  (let [sim-steps (repeatedly n #(prepare-step game))
-        transform (fn [g]
-                    (map (fn [p] {:id (:id p) :result (:result p)})
-                         (:players g)))
-        played-games (pmap g/play sim-steps)
-        results (map transform played-games)]
-    (reduce map-simulation-result {} results)))
+(defn sumerize-game-results
+  "Expects a list of played-games. Games had to be played to the end. 
+   Returns a map containing a win, loose and split-pot sumary for every 
+   player in the game list."
+  [played-games]
+  (reduce map-simulation-result
+          {}
+          (map
+           (fn [g]
+             (map
+              (fn [p] {:id (:id p) :result (:result p)})
+              (:players g)))
+           played-games)))
