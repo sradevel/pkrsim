@@ -50,7 +50,7 @@ game results.
 
 #### Card Representation
 
-All cards a represented as a string. 
+All cards are represented by strings. 
 
 ```clojure
 (def ace-of-hearts "AH")
