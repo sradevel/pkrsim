@@ -1,5 +1,7 @@
 # pokersim
 
+[![Clojars Project](http://clojars.org/pkrsim/latest-version.svg)](http://clojars.org/pkrsim)
+
 Simulates poker hands (Texas Holdem Hands). Results can be used to
 calculate static information about the hands.
 
